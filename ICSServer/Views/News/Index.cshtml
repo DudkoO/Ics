@@ -9,77 +9,181 @@
 <p>
     <a asp-action="New">Создать новую</a>
 </p>
-<form asp-controller="News" asp-action="Index">
-    <p>
-        Title: <input type="text" name="SearchString">
-        <input type="submit" value="Filter" />
-    </p>
-</form>
 
-<table class="table">
+
+
+<table class="table" id="table">
+    <thead>
+    <th>
+        <label>Фильтр</label>
+    </th>
+
+    <th>
+        <input type="text" name="SearchString" id="titleField">
+    </th>
+
+    <th>
+        
+    </th>
+    <th>
+        
+    </th>
+    <th>
+        <input type="checkbox" id="filterApplicants" />
+    </th>
+    <th>
+        <input type="checkbox" id="filterStudents" />
+        
+    </th>
+    <th>
+        <input type="checkbox" id="filterGraduates" />
+
+    </th>
+
+    <th></th>
+    </thead>
     <thead>
         <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Image)
             </th>
+
             <th>
                 @Html.DisplayNameFor(model => model.Title)
             </th>
-            
+
             <th>
                 @Html.DisplayNameFor(model => model.Author)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.DateOfPublication)
             </th>
-            
+            <th>
+                @Html.DisplayNameFor(model => model.Publics.Applicants)
+            </th>
             <th>
                 @Html.DisplayNameFor(model => model.Publics.Students)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Publics.Graduates)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Publics.Applicants)
-            </th>
+
             <th></th>
         </tr>
     </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <th>
-                <img src="~/Files/Images/@item.Image"
-                     class="rounded-circle"
-                     height="60" width="60"
-                     asp-append-version="true" />
-            </th>
-            <td>
-                @Html.DisplayFor(modelItem => item.Title)
-            </td>
 
-            <td>
-                @Html.DisplayFor(modelItem => item.Author)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateOfPublication)
-            </td>
-            
-            <td>
-                @Html.DisplayFor(modelItem => item.Publics.Students)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Publics.Graduates)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Publics.Applicants)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Просмотр</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
-            </td>
-        </tr>
-}
+    <tbody id="tbody">
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>
+                    <img src="~/Files/Images/@item.Image" class="rounded-circle" height="60" width="60" asp-append-version="true" />
+                    <script>
+                    console.log("real name");
+                    console.log("~/Files/Images/@item.Image");
+                    </script>
+                </th>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Author)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateOfPublication)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Publics.Applicants)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Publics.Students)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Publics.Graduates)
+                </td>
+
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">Просмотр</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
+
+@section scripts{
+    <script>
+        $("#titleField").on("keyup change", function() {
+         var titleFilter = $("#titleField").val();
+        $.ajax({
+
+          type: 'POST',
+          url: '@Url.Action("filterNews","News")',
+          dataType: "json",
+
+          data: {
+
+              titleFilter: titleFilter,
+              filterApplicants: filterApplicants,
+              filterStudents: filterStudents,
+              filterGraduates:filterGraduates
+
+          },
+
+          success: function(response) {
+
+            console.log(response);
+            $("#table > tbody").empty();
+
+              $(function () {
+                  $.each(response, function (i, item) {
+                      
+                      var $tr = $('<tr>').append(
+                         
+                          $('<th>').html("<img src='~/Files/Images/" + item.image + "' class='rounded-circle' height='60' width='60' asp-append-version='true'/>"),
+                          $('<td>').text(item.title),
+                          $('<td>').text(item.author),
+                          $('<td>').text(item.dateOfPublication),
+                          $('<td>').html("<input type='checkbox'  id='applicants' disabled >"),
+                          $('<td>').html("<input type='checkbox'  id='students' disabled>"),
+                          $('<td>').html("<input type='checkbox' id='graduates' disabled>")                       
+            
+
+                      ).appendTo('#table');
+
+                      if (item.publics.applicants) {
+                          $("#applicants").prop("checked", true);                          
+                      }
+                      if (item.publics.students) {
+                          $("#students").prop("checked", true);                          
+                                                    
+                      }
+                      if (item.publics.graduates) {
+                          $("#graduates").prop("checked", true);                          
+                                                    
+                      }
+                      
+
+                  })
+
+              })
+
+          },
+
+          error: function() {
+
+            alert(' Search Error');
+
+          }
+
+      });
+
+        });
+
+
+
+    </script>
+
+}

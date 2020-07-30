@@ -68,23 +68,29 @@ namespace ICSServer.Controllers
             return true;
         }
 
+        [HttpPost]
+        public async Task<JsonResult> filterNewsAsync(string titleFilter)
+        {
+            List<News> news = new List<News>();
+            if (String.IsNullOrEmpty(titleFilter) )
+                news = await _context.News.Include(s => s.Publics).ToListAsync();
+            else
+            news = await _context.News.Where(s => s.Title.Contains(titleFilter)).Include(x => x.Publics).ToListAsync();
+
+           
+            var response = Json(news);
+            return response;
+
+        }
+
 
         // GET: News
 
-        public async Task<IActionResult> Index(string searchString)
+        public async Task<IActionResult> Index()
         {
-            List<News> news = new List<News>();
-            if (!String.IsNullOrEmpty(searchString))
-            {
-                news = await _context.News.Where(s => s.Title.Contains(searchString)).Include(x => x.Publics).ToListAsync();
-            }
-            else
-                news = await _context.News.Include(x => x.Publics).OrderBy(s=>s.DateOfPublication).ToListAsync();
-
-           
-
+            List<News> news = new List<News>();                     
+           news = await _context.News.Include(x => x.Publics).OrderBy(s=>s.DateOfPublication).ToListAsync();
             return View(news);
-
         }
 
          [Authorize(Roles = "General, NewsCreator")]
@@ -291,76 +297,6 @@ namespace ICSServer.Controllers
             return View(news);
         }
 
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Author,DateOfPublication,link,Students,Graduates,Applicants")]
-        //News news, IFormFile newImage, bool Applicants, bool Students, bool Graduates)
-        //{
-
-        //    string ErrorMesssage = "";
-        //    if (id != news.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-
-
-        //    if (ModelState.IsValid)
-        //    {
-
-
-        //        try
-        //        {
-        //            //нашли паблик, относящийся к этой записи и апгрейднули его
-        //            var publics = await _context.Publics.FirstAsync(x => x.Id == news.Id);
-        //            publics.Applicants = Applicants;
-        //            publics.Students = Students;
-        //            publics.Graduates = Graduates;
-        //            _context.Update(publics);
-        //            await _context.SaveChangesAsync();
-
-
-        //            //отслеживаем, была ли занружена новая картинка
-        //            if (newImage == null)
-        //            {
-        //                //находим запись новости                        
-        //                var tss = await _context.News.AsNoTracking().FirstAsync(x => x.Id == news.Id);
-        //                //записываем имя старой картинки в новость( так как оно не приходит в модели)
-        //                news.Image = tss.Image;
-        //            }
-        //            else
-        //            {
-        //                //находим запись новости                        
-        //                var tss = await _context.News.AsNoTracking().FirstAsync(x => x.Id == news.Id);
-        //                if (tss.Image != null)
-        //                {
-        //                    //удаляем файл прежней картинки с диска                            
-        //                    string path = Path.Combine(webHostEnvironment.WebRootPath, "Files/Images", tss.Image);
-        //                    FileInfo oldImage = new FileInfo(path);
-        //                    oldImage.Delete();
-        //                }
-        //                //загружаем новую картинку и записываем ее имя в новость. Пау!
-        //                news.Image = UploadedFile(new NewsCreateModel { Image = newImage });
-        //            }
-
-        //            _context.Update(news);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!NewsExists(news.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(news);
-        //}
-
-        // GET: News/Delete/5
         [Authorize(Roles = "General, NewsCreator")]
 
         public async Task<IActionResult> Delete(int? id)
@@ -369,7 +305,7 @@ namespace ICSServer.Controllers
             {
                 return NotFound();
             }
-
+            //todo удаление картинки
             var news = await _context.News
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (news == null)
