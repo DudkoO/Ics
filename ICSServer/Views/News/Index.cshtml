@@ -1,0 +1,85 @@
+﻿@model IEnumerable<ICSServer.Models.News>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Управление новостями</h1>
+
+<p>
+    <a asp-action="New">Создать новую</a>
+</p>
+<form asp-controller="News" asp-action="Index">
+    <p>
+        Title: <input type="text" name="SearchString">
+        <input type="submit" value="Filter" />
+    </p>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Image)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Title)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.Author)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateOfPublication)
+            </th>
+            
+            <th>
+                @Html.DisplayNameFor(model => model.Publics.Students)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Publics.Graduates)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Publics.Applicants)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <th>
+                <img src="~/Files/Images/@item.Image"
+                     class="rounded-circle"
+                     height="60" width="60"
+                     asp-append-version="true" />
+            </th>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+
+            <td>
+                @Html.DisplayFor(modelItem => item.Author)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateOfPublication)
+            </td>
+            
+            <td>
+                @Html.DisplayFor(modelItem => item.Publics.Students)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Publics.Graduates)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Publics.Applicants)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Редактировать</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Просмотр</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Удалить</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

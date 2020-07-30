@@ -1,0 +1,46 @@
+﻿@model ICSServer.Models.Consultation
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h1>Удаление</h1>
+
+<h3>Вы уверенны, что хотите удалить эту запись?</h3>
+
+<div>
+    <h4>Consultation</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Day)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Day)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Auditorium)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Auditorium)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.From)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.From)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.To)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.To)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <input type="submit" value="Удалить" class="btn btn-danger" /> |
+        <a asp-action="Index">Назад к списку</a>
+    </form>
+</div>

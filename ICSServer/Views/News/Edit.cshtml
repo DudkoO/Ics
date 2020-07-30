@@ -1,0 +1,128 @@
+﻿@model ICSServer.Models.News
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<h1>Редактирование</h1>
+
+
+<div class="col-md-10 mx-auto py-4">
+    <div class="">
+
+        <form enctype="multipart/form-data" asp-action="Edit">
+            <div class="row">
+                <div class="col-md-6">
+                    <img src="~/Files/Images/@Model.Image"
+                         class="rounded-circle"
+                         height="100" width="100"
+                         asp-append-version="true" />
+
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Title" class="control-label"></label>
+                        <input asp-for="Title" class="form-control" />
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="col">
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <textarea asp-for="Description" id="Description" class="form-control"></textarea>
+                        <span asp-validation-for="Description" class="col"></span>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Author" class="control-label"></label>
+                        <input asp-for="Author" class="form-control" />
+                        <span asp-validation-for="Author" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="DateOfPublication" class="control-label"></label>
+                        <input asp-for="DateOfPublication" class="form-control" />
+                        <span asp-validation-for="DateOfPublication" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="link" class="control-label"></label>
+                        <input asp-for="link" class="form-control" />
+                        <span asp-validation-for="link" class="text-danger"></span>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="Image" class="control-label"></label>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" name="newImage">
+                            <label class="custom-file-label" for="customFile">Choose file</label>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-1">
+
+                </div>
+                <div class="col-sm-2">
+                    <label class="form-check-label">
+                        <input class="form-check-input" name="Students" asp-for="Publics.Students" /> @Html.DisplayNameFor(model => model.Publics.Students)
+                    </label>
+                </div>
+                <div class="col-sm-2">
+                    <label class="form-check-label">
+                        <input class="form-check-input" name="Graduates" asp-for="Publics.Graduates" /> @Html.DisplayNameFor(model => model.Publics.Graduates)
+                    </label>
+                </div>
+                <div class="col-sm-2">
+                    <label class="form-check-label">
+                        <input class="form-check-input" name="Applicants" asp-for="Publics.Applicants" /> @Html.DisplayNameFor(model => model.Publics.Applicants)
+                    </label>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Сохранить" class="btn btn-primary" />
+
+            </div>
+            <span class="text-danger">@Model.ErrorMessage</span>
+
+            <div>
+                <a asp-action="Index">Назад к списку</a>
+
+            </div>
+        </form>
+    </div>
+
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            var editor = CKEDITOR.replace('Description');
+        });
+    </script>
+}
+

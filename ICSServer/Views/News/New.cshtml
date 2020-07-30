@@ -1,0 +1,130 @@
+﻿@model ICSServer.ViewModel.NewsCreateModel
+@{
+    ViewData["Title"] = "New";
+}
+
+<h1>Новая</h1>
+
+<div class="col-md-10 mx-auto py-4">
+    
+        
+        <div class="card-body">
+            <form enctype="multipart/form-data" asp-action="New">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Title" class="control-label"></label>
+                            <input asp-for="Title" class="form-control" />
+                            <span asp-validation-for="Title" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            @Html.TextAreaFor(model => model.Description, new { @class = "text-editor" })
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Author" class="control-label"></label>
+                            <input asp-for="Author" class="form-control" />
+                            <span asp-validation-for="Author" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="DateOfPublication" class="control-label"></label>
+                            <input asp-for="DateOfPublication" class="form-control" />
+                            <span asp-validation-for="DateOfPublication" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="link" class="control-label"></label>
+                            <input asp-for="link" class="form-control" />
+                            <span asp-validation-for="link" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label asp-for="Image" class="control-label"></label>
+                            <div class="custom-file">
+                                <input asp-for="Image" class="custom-file-input" id="customFile">
+                                <label class="custom-file-label" for="customFile">Choose file</label>
+                            </div>
+                            <span asp-validation-for="Image" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                   
+                    <div class="col-sm-2">
+                        
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Publics.Applicants" checked /> @Html.DisplayNameFor(model => model.Publics.Applicants)
+                            <span asp-validation-for="Publics.Applicants" class="text-danger"></span>
+                        </label>
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Publics.Students" /> @Html.DisplayNameFor(model => model.Publics.Students)
+                            <span asp-validation-for="Publics.Students" class="text-danger"></span>
+                        </label>
+                    </div>
+                    <div class="col-sm-2">
+                        <label class="form-check-label">
+                            <input class="form-check-input" asp-for="Publics.Graduates" /> @Html.DisplayNameFor(model => model.Publics.Graduates)
+                            <span asp-validation-for="Publics.Graduates" class="text-danger"></span>
+                        </label>
+                    </div>
+
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Создать" class="btn btn-primary" />
+                    <span  class="text-danger">@Model.ErrorMesssage</span>
+                </div>
+
+                <div>
+                    <a asp-action="Index">Назад к списку</a>
+                </div>
+            </form>
+        </div>
+    
+</div>
+
+@section scripts{
+    <script type="text/javascript">
+
+        // Add the following code if you want the name of the file appear on select
+        $(".custom-file-input").on("change", function () {
+            var fileName = $(this).val().split("\\").pop();
+            $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+        });
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function (event) {
+            var editor = CKEDITOR.replace('Description');
+        });
+    </script>
+    <script>
+      $(document).ready(function () {
+    if ($('.text-editor')) {
+        $('.text-editor').ckeditor();
+        $('input[type=submit]').bind('click', function() {
+            $('.text-editor').ckeditorGet().updateElement();
+        });
+    }
+    });
+    </script>
+        }  
