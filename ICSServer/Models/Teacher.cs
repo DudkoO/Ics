@@ -50,7 +50,9 @@ namespace ICSServer.Models
         public List<Consultation> Consultations { set; get; } 
 
         public string Image { get; set; }
-        
+
+        [Display(Name = "Академическая степень")]
+
         public AcademicDegree AcademicDegree { get; set; }
 
 

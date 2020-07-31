@@ -15,7 +15,7 @@ using System.Security.Claims;
 
 namespace ICSServer.Controllers
 {
-    
+
     [Authorize(Roles = "General, NewsCreator, NewsEditor")]
     public class NewsController : Controller
     {
@@ -53,7 +53,7 @@ namespace ICSServer.Controllers
         public bool IsImage(IFormFile file)
         {
             string[] MIMEImageType = { "image/jpeg", "image/pjpeg", "image/jpeg", "image/pjpeg", "image/png" };
-            for(int i = 0; i < MIMEImageType.Length; i++)
+            for (int i = 0; i < MIMEImageType.Length; i++)
             {
                 if (MIMEImageType[i].Equals(file.ContentType))
                     return true;
@@ -69,17 +69,35 @@ namespace ICSServer.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> filterNewsAsync(string titleFilter)
+        public async Task<JsonResult> filterNewsAsync(string titleFilter, bool filterApplicants, bool filterStudents, bool filterGraduates)
         {
             List<News> news = new List<News>();
-            if (String.IsNullOrEmpty(titleFilter) )
+            if (String.IsNullOrEmpty(titleFilter))
                 news = await _context.News.Include(s => s.Publics).ToListAsync();
             else
-            news = await _context.News.Where(s => s.Title.Contains(titleFilter)).Include(x => x.Publics).ToListAsync();
+                news = await _context.News.Where(s => s.Title.Contains(titleFilter)).Include(x => x.Publics).ToListAsync();
 
-           
-            var response = Json(news);
-            return response;
+            //todo Вернуть Гитлера абитуриентам
+            bool removeFlag = true;
+
+            if ((!filterApplicants && !filterStudents && !filterGraduates) || (filterApplicants && filterStudents && filterGraduates))
+                return Json(news);
+
+            else
+                for (int i = news.Count - 1; i > -1; i--)
+                {
+                    if (filterApplicants && news[i].Publics.Applicants)
+                        removeFlag = false;
+                    else if (filterStudents && news[i].Publics.Students)
+                        removeFlag = false;
+                    else if (filterGraduates && news[i].Publics.Graduates)
+                        removeFlag = false;
+                    else removeFlag = true;
+
+                    if (removeFlag)
+                        news.Remove(news[i]);
+                }
+            return Json(news);
 
         }
 
@@ -88,18 +106,18 @@ namespace ICSServer.Controllers
 
         public async Task<IActionResult> Index()
         {
-            List<News> news = new List<News>();                     
-           news = await _context.News.Include(x => x.Publics).OrderBy(s=>s.DateOfPublication).ToListAsync();
+            List<News> news = new List<News>();
+            news = await _context.News.Include(x => x.Publics).OrderBy(s => s.DateOfPublication).ToListAsync();
             return View(news);
         }
 
-         [Authorize(Roles = "General, NewsCreator")]
+        [Authorize(Roles = "General, NewsCreator")]
 
         public IActionResult New()
         {
             return View(new NewsCreateModel());
         }
-       
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "General, NewsCreator")]
@@ -109,7 +127,7 @@ namespace ICSServer.Controllers
             //сто тыщь миллионов проверок
             //если не выбрана ни одна аудитория
             if (IsNotPublics(model.Publics)) { model.ErrorMesssage = "Выберите минимум одну аудиторию для публикации"; return View(model); }
-            
+
             if (model.Image != null)
             {
                 //если файл больше 10мб
@@ -117,7 +135,7 @@ namespace ICSServer.Controllers
                 //если файл - не картинка
                 if (!IsImage(model.Image)) { model.ErrorMesssage = "Формат файла не поддерживается. Поддерживаемые форматы: jpg,jpeg,png"; return View(model); }
             }
-            
+
             if (ModelState.IsValid)
             {
 
@@ -154,7 +172,7 @@ namespace ICSServer.Controllers
         private string UploadedFile(NewsCreateModel model)
         {
             string uniqueFileName = null;
-            
+
             if (model.Image != null)
             {
                 string uploadsFolder = Path.Combine(webHostEnvironment.WebRootPath, "Files/Images");
@@ -168,8 +186,8 @@ namespace ICSServer.Controllers
             }
             return uniqueFileName;
         }
-              
-                          
+
+
         // GET: News/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -191,9 +209,9 @@ namespace ICSServer.Controllers
         }
 
         // GET: News/Create
-        
 
-        
+
+
         // GET: News/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -203,7 +221,7 @@ namespace ICSServer.Controllers
             }
 
             var news = await _context.News.FindAsync(id);
-           
+
             if (news == null)
             {
                 return NotFound();
@@ -222,14 +240,14 @@ namespace ICSServer.Controllers
         News news, IFormFile newImage, bool Applicants, bool Students, bool Graduates)
         {
 
-            
+
             if (id != news.Id)
             {
                 return NotFound();
             }
             //сто тыщь миллионов проверок
             //если не выбрана ни одна аудитория
-            if (IsNotPublics(new Publics {Applicants=Applicants,Students=Students,Graduates=Graduates })) { news.ErrorMessage = "Выберите минимум одну аудиторию для публикации"; return View(news); }
+            if (IsNotPublics(new Publics { Applicants = Applicants, Students = Students, Graduates = Graduates })) { news.ErrorMessage = "Выберите минимум одну аудиторию для публикации"; return View(news); }
 
             if (newImage != null)
             {
@@ -259,7 +277,7 @@ namespace ICSServer.Controllers
                     if (newImage == null)
                     {
                         //находим запись новости                        
-                       var tss = await _context.News.AsNoTracking().FirstAsync(x => x.Id == news.Id);
+                        var tss = await _context.News.AsNoTracking().FirstAsync(x => x.Id == news.Id);
                         //записываем имя старой картинки в новость( так как оно не приходит в модели)
                         news.Image = tss.Image;
                     }
@@ -269,8 +287,8 @@ namespace ICSServer.Controllers
                         var tss = await _context.News.AsNoTracking().FirstAsync(x => x.Id == news.Id);
                         if (tss.Image != null)
                         {
-                           //удаляем файл прежней картинки с диска                            
-                            string path = Path.Combine(webHostEnvironment.WebRootPath, "Files/Images", tss.Image);                            
+                            //удаляем файл прежней картинки с диска                            
+                            string path = Path.Combine(webHostEnvironment.WebRootPath, "Files/Images", tss.Image);
                             FileInfo oldImage = new FileInfo(path);
                             oldImage.Delete();
                         }
@@ -325,7 +343,7 @@ namespace ICSServer.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var news = await _context.News.FindAsync(id);
-            
+
             if (news.Image != null)
             {
                 //удаляем файл прежней картинки с диска                            

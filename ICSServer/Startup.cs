@@ -60,7 +60,7 @@ namespace ICSServer
                                   builder =>
                                   {
                                       builder.WithOrigins("http://localhost",
-                                                          "https://ics-site.herokuapp.com", "http://116.202.225.138", "http://ics.admin.com");
+                                                          "https://ics-site.herokuapp.com", "http://116.202.225.138", "http://ics.admin.com", "http://ics.odessa.ua");
                                   });
             });
 

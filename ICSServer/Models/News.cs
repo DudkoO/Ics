@@ -1,7 +1,6 @@
 ﻿
 using Microsoft.AspNetCore.Mvc;
 using System;
-
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,6 +9,7 @@ namespace ICSServer.Models
     public class News
     {
         [Required]
+        
         public int Id { set; get; }
 
         [Required]
