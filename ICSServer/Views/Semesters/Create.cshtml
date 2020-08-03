@@ -1,0 +1,177 @@
+﻿@model ICSServer.Models.Semester
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h1>Create</h1>
+
+<h4>Semester</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="StartDate" class="control-label"></label>
+                <input asp-for="StartDate" class="form-control" />
+                <span asp-validation-for="StartDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FinishDate" class="control-label"></label>
+                <input asp-for="FinishDate" class="form-control" id="FinishDate" />
+                <span asp-validation-for="FinishDate" class="text-danger"></span>
+            </div>
+            <input type="button" value="Заполнить" class="btn btn-primary" id="InitialSemester" onclick="Initial()" />
+            <div class="form-group">
+                <label asp-for="StartWeek" class="control-label"></label>
+                <input asp-for="StartWeek" class="form-control" />
+                <span asp-validation-for="StartWeek" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="FirstModule" class="control-label"></label>
+
+                <div class="form-group">
+                    <label asp-for="FirstModule.WeekOfModuleStart" class="control-label"></label>
+                    <input asp-for="FirstModule.WeekOfModuleStart" class="form-control" name="test" />
+                    <span asp-validation-for="FirstModule.WeekOfModuleStart" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FirstModule.WeekOfModuleEnd" class="control-label"></label>
+                    <input asp-for="FirstModule.WeekOfModuleEnd" class="form-control" />
+                    <span asp-validation-for="FirstModule.WeekOfModuleEnd" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="FirstModule.WeekOfModuleStartDate" class="control-label"></label>
+                    <input asp-for="FirstModule.WeekOfModuleStartDate" class="form-control" />
+                    @*<span asp-validation-for="FirstModule.WeekOfModuleStartDate" class="text-danger"></span>*@
+                </div>
+                <div class="form-group">
+                    <label asp-for="FirstModule.WeekOfModuleEndDate" class="control-label"></label>
+                    <input asp-for="FirstModule.WeekOfModuleEndDate" class="form-control" />
+                    @*<span asp-validation-for="FirstModule.WeekOfModuleEndDate" class="text-danger"></span>*@
+                </div>
+
+            </div>
+            <div class="form-group">
+                <label asp-for="SecondModule" class="control-label"></label>
+                <div class="form-group">
+                    <label asp-for="SecondModule.WeekOfModuleStart" class="control-label"></label>
+                    <input asp-for="SecondModule.WeekOfModuleStart" class="form-control" />
+                    <span asp-validation-for="SecondModule.WeekOfModuleStart" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SecondModule.WeekOfModuleEnd" class="control-label"></label>
+                    <input asp-for="SecondModule.WeekOfModuleEnd" class="form-control" />
+                    <span asp-validation-for="SecondModule.WeekOfModuleEnd" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="SecondModule.WeekOfModuleStartDate" class="control-label"></label>
+                    <input asp-for="SecondModule.WeekOfModuleStartDate" class="form-control" />
+                    @*<span asp-validation-for="SecondModule.WeekOfModuleStartDate" class="text-danger"></span>*@
+                </div>
+                <div class="form-group">
+                    <label asp-for="SecondModule.WeekOfModuleEndDate" class="control-label"></label>
+                    <input asp-for="SecondModule.WeekOfModuleEndDate" class="form-control" />
+                    @*<span asp-validation-for="SecondModule.WeekOfModuleEndDate" class="text-danger"></span>*@
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Session" class="control-label"></label>
+                <div class="form-group">
+                    <label asp-for="Session.WeekOfModuleStart" class="control-label"></label>
+                    <input asp-for="Session.WeekOfModuleStart" class="form-control" />
+                    <span asp-validation-for="Session.WeekOfModuleStart" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Session.WeekOfModuleEnd" class="control-label"></label>
+                    <input asp-for="Session.WeekOfModuleEnd" class="form-control" />
+                    <span asp-validation-for="Session.WeekOfModuleEnd" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Session.WeekOfModuleStartDate" class="control-label"></label>
+                    <input asp-for="Session.WeekOfModuleStartDate" class="form-control" />
+                    @*<span asp-validation-for="Session.WeekOfModuleStartDate" class="text-danger"></span>*@
+                </div>
+                <div class="form-group">
+                    <label asp-for="Session.WeekOfModuleEndDate" class="control-label"></label>
+                    <input asp-for="Session.WeekOfModuleEndDate" class="form-control" />
+                    @*<span asp-validation-for="Session.WeekOfModuleEndDate" class="text-danger"></span>*@
+                </div>
+            </div>
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger" id="Description"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section scripts{
+    <script>
+    function Initial() {
+        var StartDate = $("#StartDate").val();
+        var FinishDate = $("#FinishDate").val();
+        
+       $.ajax({
+
+          type: 'POST',
+          url: '@Url.Action("Initial","Semesters")',
+          dataType: "json",
+
+          data: {
+
+              StartDate: StartDate,
+              FinishDate: FinishDate
+
+           },
+           success: function (response) {
+               $("#StartWeek").val(response.startWeek);
+               
+               $("#FirstModule_WeekOfModuleStart").val(response.firstModule.weekOfModuleStart);
+               $("#FirstModule_WeekOfModuleEnd").val(response.firstModule.weekOfModuleEnd);
+               $("#FirstModule_WeekOfModuleStartDate").val(cutDateToFormat(response.firstModule.weekOfModuleStartDate));
+               $("#FirstModule_WeekOfModuleEndDate").val(cutDateToFormat(response.firstModule.weekOfModuleEndDate));
+
+         
+
+
+               $("#SecondModule_WeekOfModuleStart").val(response.secondModule.weekOfModuleStart);
+               $("#SecondModule_WeekOfModuleEnd").val(response.secondModule.weekOfModuleEnd);
+               $("#SecondModule_WeekOfModuleStartDate").val(cutDateToFormat(response.secondModule.weekOfModuleStartDate));
+               $("#SecondModule_WeekOfModuleEndDate").val(cutDateToFormat(response.secondModule.weekOfModuleEndDate));               
+
+               $("#Session_WeekOfModuleStart").val(response.session.weekOfModuleStart);
+               $("#Session_WeekOfModuleEnd").val(response.session.weekOfModuleEnd);
+               $("#Session_WeekOfModuleStartDate").val(cutDateToFormat(response.session.weekOfModuleStartDate));
+               $("#Session_WeekOfModuleEndDate").val(cutDateToFormat(response.session.weekOfModuleEndDate));
+               
+               
+               $("#Description").val(response.description);
+                console.log(response);
+               //console.log(response.finishDate);
+           },
+
+
+          error: function() {            
+               console.log("Error");
+          }
+
+      });
+
+    }
+    </script>
+<script>
+    function cutDateToFormat(date) {
+        return date.substring(0,10);
+    }
+</script>
+}

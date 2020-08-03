@@ -23,21 +23,22 @@
     </th>
 
     <th>
-        
     </th>
     <th>
-        
     </th>
     <th>
         <input type="checkbox" id="filterApplicants" />
     </th>
     <th>
         <input type="checkbox" id="filterStudents" />
-        
+
     </th>
     <th>
         <input type="checkbox" id="filterGraduates" />
 
+    </th>
+    <th>
+        <input type="button" value="Очистить" class="btn btn-primary" id="filterClear" onclick="clearFilters()" />
     </th>
 
     <th></th>
@@ -115,12 +116,31 @@
 
 @section scripts{
     <script>
-        $(".filter").bind("keyup change", function() {
-            var titleFilter = $("#titleField").val();
+        $(".filter").bind("keyup change", function() {            
+
+            getNews();        
+        });
+
+
+
+    </script>
+    <script>
+        function clearFilters() {
+
+            $("#titleField").val("");
+            $("#filterApplicants").prop("checked", false);
+            $("#filterStudents").prop("checked", false);
+            $("#filterGraduates").prop("checked", false);
+            getNews();
+
+        }
+    </script>
+<script>
+    function getNews() {
+        var titleFilter = $("#titleField").val();
             var filterApplicants = $("#filterApplicants").is(":checked");
             var filterStudents = $("#filterStudents").is(":checked");
             var filterGraduates = $("#filterGraduates").is(":checked");
-
         $.ajax({
 
           type: 'POST',
@@ -143,33 +163,33 @@
 
               $(function () {
                   $.each(response, function (i, item) {
-                      
+
                       var $tr = $('<tr>').append(
-                         
+
                           $('<th>').html("<img src='/Files/Images/" + item.image + "' class='rounded-circle' height='60' width='60' asp-append-version='true'/>"),
                           $('<td>').text(item.title),
                           $('<td>').text(item.author),
                           $('<td>').text(item.dateOfPublication),
                           $('<td>').html("<input type='checkbox'  id='applicants-" + i + "' disabled >"),
                           $('<td>').html("<input type='checkbox'  id='students-" + i + "' disabled>"),
-                          $('<td>').html("<input type='checkbox' id='graduates-" + i + "' disabled>"),  
+                          $('<td>').html("<input type='checkbox' id='graduates-" + i + "' disabled>"),
                           $('<td>').html("<a href='/News/Edit/" + item.id + "'>Редактировать</a> | <a href='/News/Details/" + item.id + "'>Просмотр</a> | <a href='/News/Delete/" + item.id + "'>Удалить</a>")
-            
+
 
                       ).appendTo('#table');
 
                       if (item.publics.applicants) {
-                          $("#applicants-" + i).prop("checked", true);                          
+                          $("#applicants-" + i).prop("checked", true);
                       }
                       if (item.publics.students) {
-                          $("#students-" + i).prop("checked", true);                          
-                                                    
+                          $("#students-" + i).prop("checked", true);
+
                       }
                       if (item.publics.graduates) {
-                          $("#graduates-" + i).prop("checked", true);                          
-                                                    
+                          $("#graduates-" + i).prop("checked", true);
+
                       }
-                      
+
 
                   })
 
@@ -184,11 +204,7 @@
           }
 
       });
-
-        });
-
-        
-
-    </script>
+    }
+</script>
 
 }

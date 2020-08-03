@@ -18,6 +18,10 @@ namespace ICSServer.Database
         public DbSet<Publics> Publics { get; set; }
         public DbSet<Departament> Departaments { get; set; }
         public DbSet<News> News { set; get; }
+        
+        public DbSet<Semester> Semesters { set; get; }
+        public DbSet<Module> Modules { set; get; }
+      
 
         public DbSet<File> Files { set; get; }
         public DBContext(DbContextOptions<DBContext> options)
@@ -43,6 +47,9 @@ namespace ICSServer.Database
 
             string adminEmail = "general";
             string adminPassword = "general";
+            string salt = BCrypt.GenerateSalt();
+            string HashPassword = BCrypt.HashPassword(adminPassword, salt);
+            adminPassword = HashPassword;
 
             // добавляем роли
             Role GeneralRole = new Role { Id = 1, Name = GeneralRoleName, Description="" };

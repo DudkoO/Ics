@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -75,8 +76,10 @@ namespace ICSServer.Controllers
             {
                 User user = await _context.Users
                     .Include(u => u.Role)
-                    .FirstOrDefaultAsync(u => u.Login == model.Email && u.Password == model.Password);
-                if (user != null)
+                    .FirstOrDefaultAsync(u => u.Login == model.Email/* && u.Password == model.Password*/);
+                             
+                //сверяем пароли
+                if ((user != null)&&(BCrypt.CheckPassword(model.Password, user.Password)))
                 {
                     await Authenticate(user); // аутентификация
 

@@ -68,6 +68,13 @@ namespace ICSServer.Controllers
             if (ModelState.IsValid)
             {
                 User user = new User { Login = model.Login, Password = model.Password, Description = model.Description, Role = model.Role, RoleId = model.RoleId };
+                //хешируем пароль               
+                
+                string salt = BCrypt.GenerateSalt();
+                string HashPassword = BCrypt.HashPassword(user.Password, salt);
+                
+                user.Password = HashPassword;
+
                 _context.Add(user);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -124,7 +131,12 @@ namespace ICSServer.Controllers
                     }
 
                 }
+                //хешируем пароль               
 
+                string salt = BCrypt.GenerateSalt();
+                string HashPassword = BCrypt.HashPassword(user.Password, salt);
+
+                user.Password = HashPassword;
                 try
                 {
                     _context.Update(user);

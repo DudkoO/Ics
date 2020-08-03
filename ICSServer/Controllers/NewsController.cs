@@ -77,7 +77,7 @@ namespace ICSServer.Controllers
             else
                 news = await _context.News.Where(s => s.Title.Contains(titleFilter)).Include(x => x.Publics).ToListAsync();
 
-            //todo Вернуть Гитлера абитуриентам
+            
             bool removeFlag = true;
 
             if ((!filterApplicants && !filterStudents && !filterGraduates) || (filterApplicants && filterStudents && filterGraduates))
